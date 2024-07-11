@@ -253,3 +253,16 @@ func TestSqrt(t *testing.T) {
 		aSquared.Mul(aSquared, hundred)
 	}
 }
+
+func TestMpz(t *testing.T) {
+	a, ok := new(Int).SetString("0x1234567890abcdef", 0)
+	if !ok {
+		panic("parse error")
+	}
+	arr := a.Bytes()
+	b := new(Int).SetBytes(arr)
+
+	if a.Cmp(b) != 0 {
+		t.Errorf("not equal: a=%v, b=%v", a.String(), b.String())
+	}
+}

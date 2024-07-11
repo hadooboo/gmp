@@ -15,6 +15,7 @@ package gmp
 #include <stdlib.h>
 */
 import "C"
+import "math/rand"
 
 // Sqrt sets x to the truncated integer part of the square root of x
 //
@@ -205,4 +206,45 @@ func (z *Int) Uint32() uint32 {
 func (z *Int) Int32() int32 {
 	z.doinit()
 	return int32(C.mpz_get_si(&z.i[0]))
+}
+
+// Nextprime sets z to the next prime of x and returns z.
+//
+// NB This is not part of big.Int
+func (z *Int) Nextprime(x *Int) *Int {
+	x.doinit()
+	z.doinit()
+	C.mpz_nextprime(&z.i[0], &x.i[0])
+	return z
+}
+
+// PowM sets z to the base^exp%mod and returns z.
+//
+// NB This is not part of big.Int
+func (z *Int) PowM(base *Int, exp *Int, mod *Int) *Int {
+	base.doinit()
+	exp.doinit()
+	mod.doinit()
+	z.doinit()
+	C.mpz_powm(&z.i[0], &base.i[0], &exp.i[0], &mod.i[0])
+	return z
+}
+
+// RandomPrime sets z to the n bytes random prime and returns z.
+//
+// NB This is not part of big.Int
+func (z *Int) RandomPrime(n uint8) *Int {
+	z.doinit()
+	arr := make([]uint8, n)
+	for i := range arr {
+		arr[i] = uint8(rand.Intn(0x100))
+	}
+	z.Nextprime(new(Int).SetBytes(arr))
+	for i := range arr {
+		arr[i] = uint8(0xff)
+	}
+	if z.Cmp(new(Int).SetBytes(arr)) > 0 {
+		return z.RandomPrime(n)
+	}
+	return z
 }
