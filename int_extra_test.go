@@ -262,7 +262,7 @@ func TestMpz(t *testing.T) {
 	arr := a.Bytes()
 	b := new(Int).SetBytes(arr)
 
-	if a.Cmp(b) != 0 {
+	if !a.Equals(b) {
 		t.Errorf("not equal: a=%v, b=%v", a.String(), b.String())
 	}
 }

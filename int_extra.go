@@ -248,3 +248,7 @@ func (z *Int) RandomPrime(n uint8) *Int {
 	}
 	return z
 }
+
+func (z *Int) Equals(other *Int) bool {
+	return z.Cmp(other) == 0
+}
